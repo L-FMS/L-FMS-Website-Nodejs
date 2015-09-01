@@ -4,10 +4,36 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var hbs = require('hbs');
+var config = require('./config');
 
 var routes = require('./routes/index');
-var users = require('./routes/users');
 
+// Initialize LeanCloud
+var AV = require('avoscloud-sdk').AV;
+AV.initialize(config.LeanCloud.AppID, config.LeanCloud.AppKey);
+
+// hbs helper
+var blocks = {};
+
+hbs.registerHelper('extend', function(name, context) {
+  var block = blocks[name];
+  if (!block) {
+    block = blocks[name] = [];
+  }
+
+  block.push(context.fn(this)); // for older versions of handlebars, use block.push(context(this));
+});
+
+hbs.registerHelper('block', function(name) {
+  var val = (blocks[name] || []).join('\n');
+
+  // clear the block
+  blocks[name] = [];
+  return val;
+});
+
+// Configure App
 var app = express();
 
 // view engine setup
@@ -22,8 +48,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
-app.use('/users', users);
+// Routers
+app.use(routes.frontend.baseUri, routes.frontend());
+app.use(routes.admin.baseUri, routes.admin());
+app.use(routes.api.baseUri, routes.api());
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
