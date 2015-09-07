@@ -26,6 +26,18 @@ var frontendRoutes = function () {
   // GET user page
   router.get('/users/:userId', frontend.userPage);
 
+  // Get post items page
+  router.param('itemType', function (req, res, next, itemType) {
+    if (itemType !== 'lost' && itemType !== 'found') {
+      next(new Error('Wrong item type!'));
+      return;
+    }
+
+    req.item = { type: itemType };
+    next();
+  });
+  router.get('/items/:itemType', frontend.postItemPage);
+
   // Session login
   router.post('/login', function (req, res, next) {
     var email = req.body.email;

@@ -1,0 +1,45 @@
+{{#extend "stylesheets"}}
+<link rel="stylesheet" href="/stylesheets/post.css">
+{{/extend}}
+
+    <main class="post-screen">
+      <div class="login-icon">
+        <img src="/images/icons/svg/paper-bag.svg" alt="Welcome th L&FMS">
+        <h4>Complete the <small>information</small></h4>
+      </div>
+      <form class="login-form" name="loginForm" action="/api/v1/items/lost" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="post-name" style="color: #bfc9ca;">物品名</label>
+          <input type="text" class="form-control login-field" placeholder="物品名" id="post-name" name="name" required autofocus>
+          <label for="post-name" class="login-field-icon fui-search"></label>
+        </div>
+        <div class="form-group">
+          <label for="post-place" style="color: #bfc9ca;">地点</label>
+          <input type="text" class="form-control login-field" placeholder="地点" name="place" id="post-place" required>
+          <label for="post-place" class="login-field-icon fui-location"></label>
+        </div>
+        <div class="form-group">
+          <label for="post-image" style="color: #bfc9ca;">图片</label>
+          <input type="file" class="form-control login-field filestyle" id="post-image" name="image" accept="image/*" required>
+        </div>
+        <div class="form-group">
+          <label for="post-tags" style="color: #bfc9ca;">标签</label>
+          <input class="form-control login-field tagsinput" placeholder="标签" name="tags" id="post-tags" required>
+        </div>
+        <div class="form-group">
+          <label for="post-description" style="color: #bfc9ca;">物品描述</label>
+          <textarea class="form-control login-field" name="description" id="post-description" cols="30" rows="5" placeholder="物品描述"></textarea>
+        </div>
+        <button type="submit" class="btn btn-danger btn-lg btn-block">提交</button>
+      </form>
+    </main>
+
+{{#extend "scripts"}}
+<script src="/javascripts/bootstrap-select.js" type="text/javascript"></script>
+<script src="/javascripts/bootstrap-filestyle.min.js" type="text/javascript"></script>
+<script src="/javascripts/jquery.tagsinput.js" type="text/javascript"></script>
+<script type="text/javascript">
+  $("select").selectpicker({ style: 'btn-hg btn-primary', menuStyle: 'dropdown-inverse' });
+  $(".tagsinput").tagsInput();
+</script>
+{{/extend}}

@@ -8,10 +8,14 @@
 var express = require('express');
 var api = require('../api');
 var AV = require('avoscloud-sdk').AV;
+var multer = require('multer');
+
+// TODO: Don't need to store in the disk
+var upload = multer({ dest: 'uploads/' });
 
 var baseUri = '/api/v1';
 
-var validateJoinRequest = function (req, res, next) {
+function validateAddUserRequest(req, res, next) {
   // TODO: Validate Password
 
   req.user = {
@@ -20,7 +24,7 @@ var validateJoinRequest = function (req, res, next) {
     'userInfo': {
       'name': req.body.name,
       'gender': req.body.gender == 0 ? 'male' : 'female',
-      'birth': req.body.birth,
+      'birth': new Date(req.body.birth),
       'mobilePhoneNumber': req.body.phone,
       'major': req.body.major,
       'address': req.body.address
@@ -29,6 +33,19 @@ var validateJoinRequest = function (req, res, next) {
 
   next();
 };
+
+function validatePostItemRequest(req, res, next) {
+  req.item = {
+    'type': req.item.type,
+    'name': req.body.name,
+    'place': req.body.place,
+    'image': req.file,
+    'tags': req.body.tags.split(','),
+    'description': req.body.description
+  };
+
+  next();
+}
 
 var apiRoutes = function () {
   var router = express.Router();
@@ -43,6 +60,16 @@ var apiRoutes = function () {
     next();
   });
 
+  router.param('itemType', function (req, res, next, itemType) {
+    if (itemType !== 'lost' && itemType !== 'found') {
+      next(new Error('Wrong item type!'));
+      return;
+    }
+
+    req.item = { type: itemType };
+    next();
+  });
+
   // Users
   router.route('/users/:userId')
     .get(api.http(api.users.read)) // Get user by userId
@@ -51,7 +78,7 @@ var apiRoutes = function () {
 
   router.route('/users')
     .get(api.http(api.users.all)) // Get all the users
-    .post(validateJoinRequest, api.http(api.users.add)); // Add new user [*]
+    .post(validateAddUserRequest, api.http(api.users.add)); // Add new user [*]
 
   // Items
   router.route('/items/:itemId')
@@ -59,9 +86,9 @@ var apiRoutes = function () {
     .put(api.http(api.items.edit)) // Edit item information
     .delete(api.http(api.items.destory)); // Delete item
 
-  router.route('/items')
-    .get(api.http(api.items.all))
-    .post(api.http(api.items.add));
+  router.route('/items/:itemType')
+    .get(api.http(api.items.all)) // Get all the items
+    .post(upload.single('image'), validatePostItemRequest, api.http(api.items.add)); // Add new item [*]
 
   return router;
 };

@@ -19,7 +19,6 @@ var frontendControllers = {
       };
     }
 
-    console.log('Render data: ' + JSON.stringify(data));
     res.render('index', data);
   },
   'loginPage': function (req, res, next) {
@@ -27,6 +26,13 @@ var frontendControllers = {
   },
   'joinPage': function (req, res, next) {
     res.render('join', { title: '加入 | 失物招领管理系统' });
+  },
+  'postItemPage': function (req, res, next) {
+    if (req.item.type === 'lost') {
+      res.render('postLostItem', { title: '发布信息 | 失物招领管理系统' });
+    } else if (req.item.type === 'found') {
+      res.render('postFoundItem', { title: '发布信息 | 失物招领管理系统' });
+    }
   },
   'userPage': function (req, res, next) {
     var data = { title: '个人主页 | 失物招领管理系统' };

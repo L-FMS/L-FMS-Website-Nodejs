@@ -52,3 +52,9 @@ bower_components
 .bower-cache
 .bower-registry
 .bower-tmp
+
+### Config ###
+config.js
+
+### Upload Files ###
+uploads
