@@ -1,4 +1,5 @@
 var AV = require('avoscloud-sdk').AV;
+var Item = require('../models/item');
 
 var users = {
   add: function (object) {
@@ -15,10 +16,25 @@ var users = {
   edit: function () {},
   read: function (object) {
     var query = new AV.Query(AV.User);
-    query.equalTo('objectId', object.id);
-    return query.first();
+    return query.get(object.id);
   },
-  all: function () {}
+  all: function () {},
+  getLostItems: function (userId) {
+    var query = new AV.Query(Item);
+    var user = new AV.User();
+    user.id = userId;
+    query.equalTo('user', user);
+    query.equalTo('type', 'lost');
+    return query.find();
+  },
+  getFoundItems: function (userId) {
+    var query = new AV.Query(Item);
+    var user = new AV.User();
+    user.id = userId;
+    query.equalTo('user', user);
+    query.equalTo('type', 'found');
+    return query.find();
+  }
 };
 
 module.exports = users;

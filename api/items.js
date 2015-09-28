@@ -23,17 +23,30 @@ var items = {
       var item = new Item();
       item.set('image', file);
 
+      // 关联Tag
+      
+
+      // 关联用户
+      item.set('user', AV.User.current());
+
       return item.save(object);
     };
   },
   destory: function () {},
   edit: function () {},
-  read: function (object) {
+  read: function (object, includeUser) {
     var query = new AV.Query(Item);
-    query.equalTo('objectId', object.id);
-    return query.first();
+    if (includeUser) {
+      query.include('user');
+    };
+    return query.get(object.id);
   },
-  all: function () {}
+  all: function () {},
+  find: function (keywords) {
+    var query = new AV.Query(Item);
+    query.contains('name', keywords);
+    return query.find();
+  }
 };
 
 module.exports = items;

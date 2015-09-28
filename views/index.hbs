@@ -9,7 +9,7 @@
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
             <span class="sr-only">Toggle navigation</span>
           </button>
-          <a class="navbar-brand" href="#">L&FMS</a>
+          <a class="navbar-brand" href="/">L&FMS</a>
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse-01">
           <ul class="nav navbar-nav">
@@ -18,10 +18,10 @@
             <li><a href="#fakelink">关于我们</a></li>
           </ul>
 
-          <form class="navbar-form navbar-left" action="#" role="search">
+          <form class="navbar-form navbar-left" action="/search" role="search" method="GET">
             <div class="form-group">
               <div class="input-group">
-                <input class="form-control" id="navbarInput-01" type="search" placeholder="搜索">
+                <input class="form-control" name="q" id="navbarInput-01" type="search" placeholder="搜索">
                 <span class="input-group-btn">
                   <button type="submit" class="btn">
                     <span class="fui-search"></span>
@@ -32,7 +32,7 @@
           </form><!-- /search -->
           
           <ul class="nav navbar-nav navbar-right">
-          {{#with user}}
+          {{#with currentUser}}
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{name}}<b class="caret"></b></a>
               <span class="dropdown-arrow"></span>
@@ -62,68 +62,58 @@
 
       <div class="row">
         <div class="col-sm-6">
-          <h3>丢失物品 <a href="/thing" class="btn btn-danger">我丢东西了！</a></h3>
+          <h3>丢失物品 <a href="/items/new/lost" class="btn btn-danger">我丢东西了！</a></h3>
           <div class="table-responsive">
             <table class="table table-hover">
               <thead>
                 <tr>
-                  <th>Type</th>
-                  <th>物品民称</th>
+                  <th>物品名称</th>
                   <th>发布时间</th>
-                  <th>丢失地点</th>
+                  <th>地点</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td>Card</td>
                   <td>ID Card</td>
                   <td>2014/5/1</td>
                   <td>Playground</td>
                 </tr>
                 <tr>
-                  <td>Phone</td>
                   <td>iPhone 5</td>
                   <td>2014/3/29</td>
                   <td>Classroom</td>
                 </tr>
                 <tr>
-                  <td>Personal</td>
                   <td>Glasses</td>
                   <td>2014/4/20</td>
                   <td>Public Baths</td>
                 </tr>
                 <tr>
-                  <td>Personal</td>
                   <td>Glasses</td>
                   <td>2014/4/20</td>
                   <td>Public Baths</td>
                 </tr>
                 <tr>
-                  <td>Personal</td>
                   <td>Glasses</td>
                   <td>2014/4/20</td>
                   <td>Public Baths</td>
                 </tr>
                 <tr>
-                  <td>Personal</td>
                   <td>Glasses</td>
                   <td>2014/4/20</td>
                   <td>Public Baths</td>
                 </tr>
                 <tr>
-                  <td>Personal</td>
                   <td>Glasses</td>
                   <td>2014/4/20</td>
                   <td>Public Baths</td>
                 </tr>
                 <tr>
-                  <td>Personal</td>
                   <td>Glasses</td>
                   <td>2014/4/20</td>
                   <td>Public Baths</td>
                 </tr>
                 <tr>
-                  <td>Personal</td>
                   <td>Glasses</td>
                   <td>2014/4/20</td>
                   <td>Public Baths</td>
@@ -140,56 +130,48 @@
           </div>
         </div>
         <div class="col-sm-6">
-          <h3>拾取物品 <button class="btn btn-primary">我捡到东西了！</button></h3>
+          <h3>拾取物品 <a href="/items/new/found" class="btn btn-primary">我捡到东西了！</a></h3>
           <div class="table-responsive">
             <table class="table table-hover">
               <thead>
                 <tr>
-                  <th>Type</th>
                   <th>物品名称</th>
                   <th>发布时间</th>
-                  <th>拾取地点</th>
+                  <th>地点</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td>Card</td>
                   <td>ID Card</td>
                   <td>2014/5/1</td>
                   <td>Playground</td>
                 </tr>
                 <tr>
-                  <td>Card</td>
                   <td>ID Card</td>
                   <td>2014/5/1</td>
                   <td>Playground</td>
                 </tr>
                 <tr>
-                  <td>Card</td>
                   <td>ID Card</td>
                   <td>2014/5/1</td>
                   <td>Playground</td>
                 </tr>
                 <tr>
-                  <td>Card</td>
                   <td>ID Card</td>
                   <td>2014/5/1</td>
                   <td>Playground</td>
                 </tr>
                 <tr>
-                  <td>Card</td>
                   <td>ID Card</td>
                   <td>2014/5/1</td>
                   <td>Playground</td>
                 </tr>
                 <tr>
-                  <td>Phone</td>
                   <td>iPhone 5</td>
                   <td>2014/4/29</td>
                   <td>Classroom</td>
                 </tr>
                 <tr>
-                  <td>Personal</td>
                   <td>Glasses</td>
                   <td>2014/4/20</td>
                   <td>Public Baths</td>

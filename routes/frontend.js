@@ -14,6 +14,39 @@ var baseUri = '/';
 var frontendRoutes = function () {
   var router = express.Router();
 
+  router.all('*', function (req, res, next) {
+    var currentUser = AV.User.current();
+    res.data = {}; // init
+    if (currentUser) {
+      res.data.currentUser = {
+        name: currentUser.get('name'),
+        id: currentUser.id
+      };
+    }
+
+    next();
+  });
+
+  router.param('userId', function (req, res, next, userId) {
+    req.user = { id: userId };
+    next();
+  });
+
+  router.param('itemId', function (req, res, next, itemId) {
+    req.item = { id: itemId };
+    next();
+  });
+
+  router.param('itemType', function (req, res, next, itemType) {
+    if (itemType !== 'lost' && itemType !== 'found') {
+      next(new Error('Wrong item type!'));
+      return;
+    }
+
+    req.item = { type: itemType };
+    next();
+  });
+
   // GET home page.
   router.get('/', frontend.homepage);
 
@@ -26,17 +59,11 @@ var frontendRoutes = function () {
   // GET user page
   router.get('/users/:userId', frontend.userPage);
 
-  // Get post items page
-  router.param('itemType', function (req, res, next, itemType) {
-    if (itemType !== 'lost' && itemType !== 'found') {
-      next(new Error('Wrong item type!'));
-      return;
-    }
+  // GET item page
+  router.get('/items/:itemId', frontend.itemDetailPage);
 
-    req.item = { type: itemType };
-    next();
-  });
-  router.get('/items/:itemType', frontend.postItemPage);
+  // Get post items page
+  router.get('/items/new/:itemType', frontend.postItemPage);
 
   // Session login
   router.post('/login', function (req, res, next) {
@@ -57,6 +84,9 @@ var frontendRoutes = function () {
     AV.User.logOut();
     res.redirect('/');
   });
+
+  // Search
+  router.get('/search', frontend.searchResultPage);
 
   return router;
 };
