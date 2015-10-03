@@ -132,6 +132,7 @@ var frontendControllers = {
           'imageURL': item.get('image').url()
         };
 
+        // TODO: 之后改成浏览器端ajax加载
         item.getComments()
           .then(function (comments) {
             res.data.comments = [];
@@ -163,6 +164,10 @@ var frontendControllers = {
       .catch(function (error) {
         // TODO: handle error
       });
+  },
+  'mapPage': function (req, res, next) {
+    res.data.title = '失物招领管理系统'
+    res.render('map', res.data);
   }
 };
 

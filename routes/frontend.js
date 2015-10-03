@@ -89,6 +89,8 @@ var frontendRoutes = function () {
   // Search
   router.get('/search', frontend.searchResultPage);
 
+  router.get('/map', frontend.mapPage);
+
   return router;
 };
 
