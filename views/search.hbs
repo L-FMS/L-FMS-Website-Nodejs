@@ -30,7 +30,7 @@
               </div>
             </div>
           </form><!-- /search -->
-          
+
           <ul class="nav navbar-nav navbar-right">
           {{#with currentUser}}
             <li class="dropdown">
@@ -48,7 +48,7 @@
             <li><a href="/login" class="navbar-link">登录</a></li>
           {{/with}}
           </ul>
-          
+
         </div><!-- /.navbar-collapse -->
       </div><!-- /.container -->
     </nav><!-- /.navbar -->
@@ -73,7 +73,7 @@
               {{else}}
                 <tr class="danger">
               {{/ifCond}}
-                  <td>{{ name }}</td>
+                  <td><a href="/items/{{ id }}">{{ name }}</a></td>
                   <td>{{ time }}</td>
                   <td>{{ place }}</td>
                 </tr>

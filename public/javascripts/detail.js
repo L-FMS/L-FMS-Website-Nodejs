@@ -13,7 +13,7 @@ $(document).ready(function() {
     $('.item-comment-box .comment-btn').fadeIn(100);
   });
 
-  $('#comment-cancel').click(function(event) {
+  $('#comment-cancel-btn').click(function(event) {
     event.preventDefault();
     $('.item-comment-box textarea').animate({
       height: "42px"

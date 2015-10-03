@@ -4,12 +4,13 @@
  * @date    2015-09-01 17:21:28
  * @version 1.0
  */
-var users = require('./users');
-var items = require('./items');
+var users    = require('./users');
+var items    = require('./items');
+var comments = require('./comments');
 
 var http = function (apiMethod) {
   return function (req, res, next) {
-    var object = req.user || req.item || null;
+    var object = req.data || null;
 
     return apiMethod(object)
       .then(function onSuccess(result) {
@@ -25,5 +26,6 @@ module.exports = {
     http: http,
     // API Endpoints
     users: users,
-    items: items
+    items: items,
+    comments: comments
 };

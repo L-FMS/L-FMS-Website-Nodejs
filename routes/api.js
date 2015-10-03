@@ -6,19 +6,21 @@
  */
 
 var express = require('express');
-var api = require('../api');
-var AV = require('avoscloud-sdk').AV;
-var multer = require('multer');
+var api     = require('../api');
+var AV      = require('avoscloud-sdk').AV;
+var multer  = require('multer');
 
 // TODO: Don't need to store in the disk
-var upload = multer({ dest: 'uploads/' });
+var upload  = multer({ dest: 'uploads/' });
 
 var baseUri = '/api/v1';
 
+// Validator
 function validateAddUserRequest(req, res, next) {
   // TODO: Validate Password
 
-  req.user = {
+  req.data = {
+    'mark': 'user data',
     'email': req.body.email,
     'password': req.body.password,
     'userInfo': {
@@ -35,8 +37,13 @@ function validateAddUserRequest(req, res, next) {
 };
 
 function validatePostItemRequest(req, res, next) {
-  req.item = {
-    'type': req.item.type,
+  if (req.data.mark !== 'item data') {
+    next(new Error('Wrong request data mark: ' + req.data.mark));
+  }
+
+  req.data = {
+    'mark': 'item data',
+    'type': req.data.type,
     'name': req.body.name,
     'place': req.body.place,
     'image': req.file,
@@ -47,16 +54,32 @@ function validatePostItemRequest(req, res, next) {
   next();
 }
 
+function validateCommentRequest(req, res, next) {
+  if (req.data.mark !== 'item data') {
+    next(new Error('Wrong request data mark: ' + req.data.mark));
+  }
+
+  req.data = {
+    'mark': 'comment data',
+    'content': req.body.content,
+    'item': AV.Object.createWithoutData('Item', req.data.id),
+    'destId': req.body.destId
+  };
+
+  next();
+}
+
 var apiRoutes = function () {
   var router = express.Router();
 
+  // Process parameters first
   router.param('userId', function (req, res, next, userId) {
-    req.user = { id: userId };
+    req.data = { id: userId, mark: 'user data' };
     next();
   });
 
   router.param('itemId', function (req, res, next, itemId) {
-    req.item = { id: itemId };
+    req.data = { id: itemId, mark: 'item data' };
     next();
   });
 
@@ -66,7 +89,7 @@ var apiRoutes = function () {
       return;
     }
 
-    req.item = { type: itemType };
+    req.data = { type: itemType, mark: 'item data' };
     next();
   });
 
@@ -85,6 +108,10 @@ var apiRoutes = function () {
     .get(api.http(api.items.read)) // Get item by itemId
     .put(api.http(api.items.edit)) // Edit item information
     .delete(api.http(api.items.destory)); // Delete item
+
+  router.route('/items/:itemId/comments')
+    .get(api.http(api.items.getComments))
+    .post(validateCommentRequest, api.http(api.comments.add));
 
   router.route('/items/:itemType')
     .get(api.http(api.items.all)) // Get all the items

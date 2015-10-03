@@ -31,7 +31,7 @@
               </div>
             </div>
           </form><!-- /search -->
-          
+
           <ul class="nav navbar-nav navbar-right">
           {{#with currentUser}}
             <li class="dropdown">
@@ -49,7 +49,7 @@
             <li><a href="/login" class="navbar-link">登录</a></li>
           {{/with}}
           </ul>
-          
+
         </div><!-- /.navbar-collapse -->
       </div><!-- /.container -->
     </nav><!-- /.navbar -->
@@ -81,7 +81,7 @@
                 <span class="fui-location"></span> {{ place }}
               </li>
               <li class="item-description">
-                <span class="fui-list"></span> Description:
+                <span class="fui-list"></span> 物品描述:
                 <p>{{ description }}</p>
               </li>
             </ul>
@@ -93,40 +93,39 @@
       <div class="row">
         <div class="col-sm-8">
           <div class="item-comment-box">
-            <form action="" method="POST" runat="server">
+            <form id="comment-form" action="/api/v1/items/{{ item.id }}/comments" method="POST">
               <div class="form-group">
                 <label for="comment-content" class="sr-only">Email address</label>
-                <textarea name="comment" class="form-control" id="comment-content" placeholder="评论..." maxlength="140" onkeypress="if(event.keyCode==13) return false;"></textarea>
+                <textarea name="content" class="form-control" id="comment-content" placeholder="评论..." maxlength="140" onkeypress="if(event.keyCode==13) return false;"></textarea>
               </div>
               <div class="comment-btn">
-                <asp:Button CssClass="btn btn-inverse" runat="server" OnClick="Comment_Submit" Text="评论"/>
-                <button class="btn btn-link" id="comment-cancel">取消</button>
+                <button type="submit" class="btn btn-inverse" id="comment-btn">评论</button>
+                <button class="btn btn-link" id="comment-cancel-btn">取消</button>
               </div>
             </form>
           </div><!-- /.item-comment-box -->
+
           <div class="item-comment-list">
-
-
-              <!-- 嵌入语句foreach 用以显示comment -->
-              <% foreach (var i in UserComment)
-                 { %>
-
+          {{#each comments}}
             <div class="item-comment clearfix">
-              <a target="_balank" href="#" class="avatar">
-                <img src="/images/default.png" width="50">
+              <a target="_balank" href="/users/{{ author.id }}" class="avatar">
+                <img src="/images/default.jpg" width="50">
               </a><!-- /.avatar -->
+
               <div class="item-comment-content">
-
                 <p class="content-text">
-
-                  <a href="#" target="_blank" class="name"><%= i.user_name %></a>: <%= i.content %>
+                  <a href="/users/{{ author.id }}" target="_blank" class="name">{{ author.name }}</a>
+                  {{~#if replyTo ~}}
+                  &nbsp回复&nbsp<a href="/users/{{ replyTo.id }}" target="_blank" class="name">{{ replyTo.name }}</a>
+                  {{~/if~}}
+                  : {{ content }}
                 </p><!-- /.content-text -->
 
-                <span class="comment-time text-muted"><%= i.time.ToString() %></span><!-- /.comment-time -->
+                <span class="comment-time text-muted">{{ time }}</span><!-- /.comment-time -->
               </div><!-- /.item-comment-content -->
+
             </div><!-- /.item-comment -->
-            <%} %>
-            
+          {{/each}}
           </div><!-- /.item-comment-list -->
         </div>
       </div>

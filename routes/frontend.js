@@ -5,11 +5,11 @@
  * @version 1.0
  */
 
-var express = require('express');
+var express  = require('express');
 var frontend = require('../controllers/frontend');
-var AV = require('avoscloud-sdk').AV;
+var AV       = require('avoscloud-sdk').AV;
 
-var baseUri = '/';
+var baseUri  = '/';
 
 var frontendRoutes = function () {
   var router = express.Router();
@@ -27,13 +27,14 @@ var frontendRoutes = function () {
     next();
   });
 
+  // Process parameters first
   router.param('userId', function (req, res, next, userId) {
-    req.user = { id: userId };
+    req.data = { id: userId, mark: 'user data' };
     next();
   });
 
   router.param('itemId', function (req, res, next, itemId) {
-    req.item = { id: itemId };
+    req.data = { id: itemId, mark: 'item data' };
     next();
   });
 
@@ -43,7 +44,7 @@ var frontendRoutes = function () {
       return;
     }
 
-    req.item = { type: itemType };
+    req.data = { type: itemType, mark: 'item data' };
     next();
   });
 

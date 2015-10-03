@@ -1,8 +1,18 @@
-var AV = require('avoscloud-sdk').AV;
+var AV   = require('avoscloud-sdk').AV;
 var Item = require('../models/item');
 
 var users = {
   add: function (object) {
+    // object:
+    //   email(*)
+    //   password(*)
+    //   userInfo:
+    //     name(*)
+    //     gender
+    //     birth
+    //     mobilePhoneNumber(*)
+    //     major
+    //     address
     var user = new AV.User();
     user.set('username', object.email);
     user.set('password', object.password);

@@ -6,7 +6,7 @@
  */
 
 var express = require('express');
-var admin = require('../controllers/admin');
+var admin   = require('../controllers/admin');
 
 var baseUri = '/admin';
 

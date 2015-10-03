@@ -4,7 +4,7 @@
  * @date    2015-09-01 15:45:46
  * @version 1.0
  */
-var AV = require('avoscloud-sdk').AV;
+var AV  = require('avoscloud-sdk').AV;
 var api = require('../api');
 
 var frontendControllers = {
@@ -21,17 +21,26 @@ var frontendControllers = {
     res.render('join', res.data);
   },
   'postItemPage': function (req, res, next) {
+    if (req.data.mark !== 'item data') {
+      next(new Error('Wrong request data mark: ' + req.data.mark));
+    }
+
     res.data.title = '发布信息 | 失物招领管理系统';
-    if (req.item.type === 'lost') {
+    var itemType = req.data.type;
+    if (itemType === 'lost') {
       res.render('postLostItem', res.data);
-    } else if (req.item.type === 'found') {
+    } else if (itemType === 'found') {
       res.render('postFoundItem', res.data);
     }
   },
   'userPage': function (req, res, next) {
+    if (req.data.mark !== 'user data') {
+      next(new Error('Wrong request data mark: ' + req.data.mark));
+    }
+
     res.data.title = '个人主页 | 失物招领管理系统';
 
-    AV.Promise.when(api.users.read(req.user), api.users.getLostItems(req.user.id), api.users.getFoundItems(req.user.id))
+    AV.Promise.when(api.users.read(req.data), api.users.getLostItems(req.data.id), api.users.getFoundItems(req.data.id))
       .then(function (user, lostItems, foundItems) {
         res.data.user = {
           'id': user.id,
@@ -98,9 +107,13 @@ var frontendControllers = {
       });
   },
   'itemDetailPage': function (req, res, next) {
+    if (req.data.mark !== 'item data') {
+      next(new Error('Wrong request data mark: ' + req.data.mark));
+    }
+
     res.data.title = '物品信息 | 失物招领管理系统'
 
-    api.items.read(req.item, true)
+    api.items.read(req.data, true)
       .then(function (item) {
         var user = item.get('user');
         res.data.user = {
@@ -119,7 +132,33 @@ var frontendControllers = {
           'imageURL': item.get('image').url()
         };
 
-        res.render('detail', res.data);
+        item.getComments()
+          .then(function (comments) {
+            res.data.comments = [];
+            for (var i = 0; i < comments.length; i++) {
+              var comment = comments[i];
+              var formatComment = {
+                'author': {
+                  'id': comment.get('author').id,
+                  'name': comment.get('author').get('name')
+                },
+                'time': comment.createdAt.toLocaleString(),
+                'content': comment.get('content')
+              }
+              if (comment.get('replyTo')) {
+                formatComment.replyTo = {
+                  'id': comment.get('replyTo').id,
+                  'name': comment.get('replyTo').get('name')
+                };
+              };
+              res.data.comments.push(formatComment);
+            };
+
+            res.render('detail', res.data);
+          })
+          .catch(function (error) {
+            // TODO: handle error
+          });
       })
       .catch(function (error) {
         // TODO: handle error
