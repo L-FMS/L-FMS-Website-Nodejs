@@ -11,6 +11,7 @@ var comments = require('./comments');
 var http = function (apiMethod) {
   return function (req, res, next) {
     var object = req.data || null;
+    delete object.mark;
 
     return apiMethod(object)
       .then(function onSuccess(result) {

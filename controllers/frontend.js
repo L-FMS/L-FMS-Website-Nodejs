@@ -10,6 +10,35 @@ var api = require('../api');
 var frontendControllers = {
   'homepage': function (req, res, next) {
     res.data.title = '首页 | 失物招领管理系统';
+
+    // api.items.all()
+    //   .then(function (items) {
+    //     res.data.lostItems = [];
+    //     res.data.foundItems = [];
+    //     for (var i = 0; i < results.length; i++) {
+    //       var item = results[i];
+    //       var type = item.get('item');
+    //       var _item = {
+    //         'id': item.id,
+    //         'name': item.get('name'),
+    //         'place': item.get('place'),
+    //         'time': item.createdAt.toLocaleString(),
+    //         'type': type
+    //       };
+
+    //       if (type === 'lost') {
+    //         res.data.lostItems.push(_item);
+    //       } else if (type === 'found') {
+    //         res.data.foundItems.push(_item);
+    //       }
+    //     };
+
+    //     res.render('index', res.data);
+    //   })
+    //   .catch(function (error) {
+    //     // TODO: handle error
+    //   });
+
     res.render('index', res.data);
   },
   'loginPage': function (req, res, next) {
@@ -59,6 +88,7 @@ var frontendControllers = {
             'id': item.id,
             'name': item.get('name'),
             'place': item.get('place'),
+            'location': item.get('location'),
             'time': item.createdAt.toLocaleString()
           });
         };
@@ -71,6 +101,7 @@ var frontendControllers = {
             'id': item.id,
             'name': item.get('name'),
             'place': item.get('place'),
+            'location': item.get('location'),
             'time': item.createdAt.toLocaleString()
           });
         };
@@ -90,7 +121,6 @@ var frontendControllers = {
         res.data.results = [];
         for (var i = 0; i < results.length; i++) {
           var item = results[i];
-          console.log(typeof item.createdAt);
           res.data.results.push({
             'id': item.id,
             'name': item.get('name'),
@@ -126,9 +156,10 @@ var frontendControllers = {
           'id': item.id,
           'name': item.get('name'),
           'place': item.get('place'),
+          'location': item.get('location'),
           'time': item.createdAt.toLocaleString(),
           'type': item.get('type'),
-          'description': item.get('description'),
+          'itemDescription': item.get('itemDescription'),
           'imageURL': item.get('image').url()
         };
 
@@ -166,7 +197,7 @@ var frontendControllers = {
       });
   },
   'mapPage': function (req, res, next) {
-    res.data.title = '失物招领管理系统'
+    res.data.title = '首页 | 失物招领管理系统'
     res.render('map', res.data);
   }
 };

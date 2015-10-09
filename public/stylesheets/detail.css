@@ -85,3 +85,8 @@
   margin: 0;
   padding: 0;
 }
+
+#item-map {
+  width: 100%;
+  height: 300px;
+}

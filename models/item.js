@@ -20,10 +20,11 @@ var Item = AV.Object.extend('Item', {
 // Attributes:
 // type (Enum): lost, found
 // name (String)
-// place (String) TODO: replace to Geo Point
+// place (String)
+// location (AV.GeoPoint)
 // image (AV.File)
 // tags (Array)
-// description (String)
+// itemDescription (String)
 
 
 module.exports = Item;

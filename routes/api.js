@@ -37,18 +37,24 @@ function validateAddUserRequest(req, res, next) {
 };
 
 function validatePostItemRequest(req, res, next) {
+  console.log('validate post item request');
+
   if (req.data.mark !== 'item data') {
     next(new Error('Wrong request data mark: ' + req.data.mark));
   }
+
+  // 这个point里的都是字符串，之后要转换成float
+  var point = req.body.location.split(','); // lat, lng
 
   req.data = {
     'mark': 'item data',
     'type': req.data.type,
     'name': req.body.name,
     'place': req.body.place,
+    'location': new AV.GeoPoint({'latitude': parseFloat(point[0]), 'longitude': parseFloat(point[1])}),
     'image': req.file,
     'tags': req.body.tags.split(','),
-    'description': req.body.description
+    'itemDescription': req.body.itemDescription
   };
 
   next();
@@ -69,6 +75,19 @@ function validateCommentRequest(req, res, next) {
   next();
 }
 
+function extractItemType(req, res, next) {
+  console.log('extract item type');
+  var itemType = req.query.type;
+
+  if (itemType !== 'lost' || itemType !== 'found' || itemType !== 'all') {
+    itemType = 'all'; // Default
+  }
+
+  req.data = { type: itemType, mark: 'item data' };
+
+  next();
+}
+
 var apiRoutes = function () {
   var router = express.Router();
 
@@ -84,11 +103,6 @@ var apiRoutes = function () {
   });
 
   router.param('itemType', function (req, res, next, itemType) {
-    if (itemType !== 'lost' && itemType !== 'found') {
-      next(new Error('Wrong item type!'));
-      return;
-    }
-
     req.data = { type: itemType, mark: 'item data' };
     next();
   });
@@ -104,6 +118,12 @@ var apiRoutes = function () {
     .post(validateAddUserRequest, api.http(api.users.add)); // Add new user [*]
 
   // Items
+  router.route('/items/new/:itemType')
+    .post(upload.single('image'), validatePostItemRequest, api.http(api.items.add)); // Add new item [*]
+
+  router.route('/items')
+    .get(extractItemType, api.http(api.items.all)); // Get all the items
+
   router.route('/items/:itemId')
     .get(api.http(api.items.read)) // Get item by itemId
     .put(api.http(api.items.edit)) // Edit item information
@@ -112,10 +132,6 @@ var apiRoutes = function () {
   router.route('/items/:itemId/comments')
     .get(api.http(api.items.getComments))
     .post(validateCommentRequest, api.http(api.comments.add));
-
-  router.route('/items/:itemType')
-    .get(api.http(api.items.all)) // Get all the items
-    .post(upload.single('image'), validatePostItemRequest, api.http(api.items.add)); // Add new item [*]
 
   return router;
 };

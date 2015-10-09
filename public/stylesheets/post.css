@@ -88,3 +88,8 @@ main {
 textarea {
   resize: none;
 }
+
+#item-map {
+  width: 100%;
+  height: 300px;
+}

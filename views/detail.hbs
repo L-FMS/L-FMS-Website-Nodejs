@@ -82,9 +82,10 @@
               </li>
               <li class="item-description">
                 <span class="fui-list"></span> 物品描述:
-                <p>{{ description }}</p>
+                <p>{{ itemDescription }}</p>
               </li>
             </ul>
+            <div id="item-map" data-location="{{ location }}" data-address="{{ place }}"></div>
           {{/with}}
           </div><!-- /.item-detail-tile -->
         </div>
@@ -154,5 +155,6 @@
     </footer>
 
 {{#extend "scripts"}}
+<script src="http://api.map.baidu.com/api?v=2.0&ak=KS4GIyA5XOzQ6zsTOobXdwxO" type="text/javascript"></script>
 <script src="/javascripts/detail.js" type="text/javascript"></script>
 {{/extend}}

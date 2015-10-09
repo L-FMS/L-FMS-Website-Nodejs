@@ -16,9 +16,11 @@ var items = {
     //   type(*)
     //   name(*)
     //   place(*)
+    //   location(*)
     //   image(*)
     //   tags(*) TODO: 应该是个可选项
-    //   description(*)
+    //   itemDescription(*)
+    console.log('add item');
     var imageFile = object.image;
     delete object.image;
 
@@ -38,6 +40,12 @@ var items = {
       // 关联用户
       item.set('user', AV.User.current());
 
+      // 关联地理信息
+      item.set('location', object.location);
+      delete object.location;
+
+      console.log(item);
+
       return item.save(object);
     };
   },
@@ -50,7 +58,14 @@ var items = {
     };
     return query.get(object.id);
   },
-  all: function () {},
+  all: function (object) {
+    var type = object.type;
+    var query = new AV.Query(Item);
+    if (type !== 'all') {
+      query.equalTo('type', type);
+    };
+    return query.find();
+  },
   find: function (keywords) {
     var query = new AV.Query(Item);
     query.contains('name', keywords);
