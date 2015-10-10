@@ -29,26 +29,6 @@ $(document).ready(function() {
       anchor: BMAP_ANCHOR_TOP_LEFT
     });
     map.addControl(navigationControl);
-
-    // // 添加定位控件
-    // var geolocationControl = new BMap.GeolocationControl({
-    //   showAddressBar: false
-    // });
-    // geolocationControl.addEventListener('locationSuccess', function (e) {
-    //   // 定位成功事件
-    //   var address = '';
-    //   address += e.addressComponent.province;
-    //   address += e.addressComponent.city;
-    //   address += e.addressComponent.district;
-    //   address += e.addressComponent.street;
-    //   address += e.addressComponent.streetNumber;
-    //   console.log("当前定位地址为：" + address);
-    // });
-    // geolocationControl.addEventListener('locationError', function (e) {
-    //   // 定位失败事件
-    //   console.log(e.message);
-    // });
-    // map.addControl(geolocationControl);
   });
 
   function markAtLocation(point) {

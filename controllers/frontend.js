@@ -156,7 +156,7 @@ var frontendControllers = {
           'id': item.id,
           'name': item.get('name'),
           'place': item.get('place'),
-          'location': item.get('location'),
+          'location': item.get('location').latitude + ',' + item.get('location').longitude,
           'time': item.createdAt.toLocaleString(),
           'type': item.get('type'),
           'itemDescription': item.get('itemDescription'),

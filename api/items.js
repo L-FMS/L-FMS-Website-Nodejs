@@ -44,7 +44,7 @@ var items = {
       item.set('location', object.location);
       delete object.location;
 
-      console.log(item);
+      console.log(object);
 
       return item.save(object);
     };

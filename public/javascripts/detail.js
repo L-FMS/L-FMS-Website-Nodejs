@@ -40,7 +40,14 @@ $(document).ready(function() {
     map.addControl(navigationControl);
 
     // Add overlay
-    var mk = new BMap.Marker(point);
+    var type = $('#item-map').data('type');
+    var mk;
+    if (type === 'found') {
+      itemIcon = new BMap.Icon("/images/marker_green_sprite.png", new BMap.Size(19,25));
+      mk = new BMap.Marker(itemPoint, { icon:itemIcon });
+    } else {
+      mk = new BMap.Marker(itemPoint);
+    }
     map.addOverlay(mk);
   }
 
