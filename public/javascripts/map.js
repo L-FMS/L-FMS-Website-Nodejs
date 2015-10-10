@@ -8,6 +8,36 @@ $(document).ready(function() {
   // init map
   var map = new BMap.Map('item-map');
   var itemOverlays = [];
+  var mgr = new BMapLib.MarkerManager(map, { maxZoom: 18, trackMarkers: true });
+
+  function getResultItem(item) {
+    var type = item.get('type');
+    var typeStr = '';
+
+    if (type === 'found') {
+      typeStr = '捡到的物品'
+    } else {
+      typeStr = '丢失的物品'
+    }
+
+    var html = '<div class="col-sm-12 result-item">' +
+                 '<div class="row">' +
+                   '<div class="col-sm-8">' +
+                     '<div class="result-item-name">' +
+                       '<a href="/items/' + item.id + '">' + item.get('name') + ' <span class="result-item-type">(' + typeStr + ')</span></a>' +
+                     '</div>' +
+                     '<div class="result-item-info">' +
+                       '<p><small class="result-item-place">地点：<span>' + item.get('place') + '</span></small><br/>' +
+                       '<small class="result-item-description">物品描述：<span>' + item.get('itemDescription') + '</span></small></p>' +
+                     '</div>' +
+                   '</div>' +
+                   '<div class="col-sm-4">' +
+                     '<img class="result-item-image" src="' + item.get('image').url() + '" alt="test">' +
+                   '</div>' +
+                 '</div>' +
+               '</div>';
+    return $(html)
+  }
 
   function addItem(item) {
     var itemGeoPoint = item.get('location');
@@ -29,7 +59,7 @@ $(document).ready(function() {
     }
 
     // Add new overlay
-    map.addOverlay(mk);
+    mgr.addMarker(mk);
 
     // Add info window
     // 百度地图API功能
@@ -50,18 +80,28 @@ $(document).ready(function() {
       itemInfoWindow.open(mk);
     });
 
-    itemOverlays.push(mk);
+    // Add to result list
+    var list = $('#result-list>.row');
+    var resultItem = getResultItem(item);
+    resultItem.on('click', function(event) {
+      // event.preventDefault();
+      itemInfoWindow.open(mk);
+      map.panTo(itemPoint);
+    });
+    list.append(resultItem);
   }
 
   function showItems(items) {
-    for (var i = 0; i < itemOverlays.length; i++) {
-      map.removeOverlay(itemOverlays[i]);
-    };
+    mgr.clearMarkers();
+    var list = $('#result-list>.row');
+    list.empty();
 
     for (var i = 0; i < items.length; i++) {
       var item = items[i];
       addItem(item);
     };
+
+    mgr.showMarkers();
   }
 
   function retrieveItems(centerPoint) {
@@ -74,6 +114,31 @@ $(document).ready(function() {
     // query.withinKilometers('location', point, 10);
     query.near('location', point);
     query.find({
+      success: function (items) {
+        showItems(items);
+      },
+      error: function (error) {
+        console.log(error);
+      }
+    });
+  }
+
+  function searchItems(keywords) {
+    var nameQuery = new AV.Query(Item);
+    nameQuery.contains('name', keywords);
+
+    var tagQuery = new AV.Query(Item);
+    tagQuery.equalTo('tags', keywords);
+
+    var descriptionQuery = new AV.Query(Item);
+    descriptionQuery.contains('itemDescription', keywords);
+
+    var placeQuery = new AV.Query(Item);
+    placeQuery.contains('place', keywords);
+
+    var mainQuery = new AV.Query.or(nameQuery, tagQuery, descriptionQuery, placeQuery);
+
+    mainQuery.find({
       success: function (items) {
         showItems(items);
       },
@@ -144,4 +209,14 @@ $(document).ready(function() {
 
   // 开始定位
   geolocationControl.location();
+
+  $('#map-search-form').submit(function (event) {
+    event.preventDefault();
+
+    var keywords = $('#navbarInput-01').val();
+
+    searchItems(keywords);
+
+    return false;
+  });
 });

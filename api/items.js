@@ -67,9 +67,21 @@ var items = {
     return query.find();
   },
   find: function (keywords) {
-    var query = new AV.Query(Item);
-    query.contains('name', keywords);
-    return query.find();
+    var nameQuery = new AV.Query(Item);
+    nameQuery.contains('name', keywords);
+
+    var tagQuery = new AV.Query(Item);
+    tagQuery.equalTo('tags', keywords);
+
+    var descriptionQuery = new AV.Query(Item);
+    descriptionQuery.contains('itemDescription', keywords);
+
+    var placeQuery = new AV.Query(Item);
+    placeQuery.contains('place', keywords);
+
+    var mainQuery = new AV.Query.or(nameQuery, tagQuery, descriptionQuery, placeQuery);
+
+    return mainQuery.find();
   },
   getComments: function (object) {
     var item = AV.Object.createWithoutData('Item', object.id);
