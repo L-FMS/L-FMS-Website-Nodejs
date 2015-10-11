@@ -17,6 +17,8 @@ var users = {
     user.set('username', object.email);
     user.set('password', object.password);
     user.set('email', object.email);
+    user.setMobilePhoneNumber(object.mobilePhoneNumber);
+    delete object.mobilePhoneNumber;
 
     return user.signUp(object.userInfo);
   },

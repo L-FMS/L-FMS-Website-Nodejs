@@ -10,36 +10,8 @@ var api = require('../api');
 var frontendControllers = {
   'homepage': function (req, res, next) {
     res.data.title = '首页 | 失物招领管理系统';
-
-    // api.items.all()
-    //   .then(function (items) {
-    //     res.data.lostItems = [];
-    //     res.data.foundItems = [];
-    //     for (var i = 0; i < results.length; i++) {
-    //       var item = results[i];
-    //       var type = item.get('item');
-    //       var _item = {
-    //         'id': item.id,
-    //         'name': item.get('name'),
-    //         'place': item.get('place'),
-    //         'time': item.createdAt.toLocaleString(),
-    //         'type': type
-    //       };
-
-    //       if (type === 'lost') {
-    //         res.data.lostItems.push(_item);
-    //       } else if (type === 'found') {
-    //         res.data.foundItems.push(_item);
-    //       }
-    //     };
-
-    //     res.render('index', res.data);
-    //   })
-    //   .catch(function (error) {
-    //     // TODO: handle error
-    //   });
-
-    res.render('index', res.data);
+    // res.render('index', res.data);
+    res.render('map', res.data);
   },
   'loginPage': function (req, res, next) {
     res.data.title = '登录 | 失物招领管理系统';
@@ -141,7 +113,7 @@ var frontendControllers = {
       next(new Error('Wrong request data mark: ' + req.data.mark));
     }
 
-    res.data.title = '物品信息 | 失物招领管理系统'
+    res.data.title = '物品信息 | 失物招领管理系统';
 
     api.items.read(req.data, true)
       .then(function (item) {
@@ -197,8 +169,100 @@ var frontendControllers = {
       });
   },
   'mapPage': function (req, res, next) {
-    res.data.title = '首页 | 失物招领管理系统'
+    res.data.title = '首页 | 失物招领管理系统';
     res.render('map', res.data);
+  },
+  'settingsPage': function (req, res, next) {
+    res.data.title = '个人设置 | 失物招领管理系统';
+    res.render('settings', res.data);
+  },
+  'register': function (req, res, next) {
+    var object = req.data || null;
+    delete object.mark;
+
+    api.users.add(object)
+      .then(function (user) {
+        res.redirect('/');
+      })
+      .catch(function (error) {
+        // TODO: handle error
+        res.redirect('/');
+      });
+  },
+  'addComment': function (req, res, next) {
+    var object = req.data || null;
+    delete object.mark;
+
+    api.comments.add(object)
+      .then(function (comment) {
+        AV.Push.send({
+          channels: [AV.User.current().id],
+          data: {
+            type: 'newComment',
+            from: comment.get('author').get('name')
+          }
+        });
+      })
+      .catch(function (error) {
+        // TODO: handle error
+      });
+
+    res.redirect('back');
+  },
+  'addItem': function (req, res, next) {
+    var object = req.data || null;
+    delete object.mark;
+
+    api.items.add(object)
+      .then(function (item) {
+        res.redirect('/items/' + item.id);
+      })
+      .catch(function (error) {
+        // TODO: handle error
+        res.redirect('/');
+      });
+  },
+  'updateUserInfo': function (req, res, next) {
+    var object = req.data || null;
+    delete object.mark;
+
+    var currentUser = AV.User.current();
+    for (var key in object) {
+      if (key === 'mobilePhoneNumber') {
+        currentUser.setMobilePhoneNumber(object[key]);
+        continue;
+      };
+      currentUser.set(key, object[key]);
+    }
+
+    currentUser.save()
+      .then(function (user) {
+        res.redirect('back');
+      })
+      .catch(function (error) {
+        // TODO: handle error
+        res.redirect('back');
+      });
+  },
+  'changePassword': function (req, res, next) {
+    var currentUser = AV.User.current();
+    var oldPassword = req.body['old-pwd'];
+    var newPassword = req.body['new-pwd'];
+    var confirmPassword = req.body['confirm-pwd'];
+
+    if (newPassword !== confirmPassword) {
+      res.redirect('back');
+      return;
+    };
+
+    currentUser.updatePassword(oldPassword, newPassword)
+      .then(function (user) {
+        res.redirect('back');
+      })
+      .catch(function (user, error) {
+        // TODO: handle error
+        res.redirect('back');
+      });
   }
 };
 

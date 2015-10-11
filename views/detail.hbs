@@ -14,9 +14,8 @@
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse-01">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="/">主页</a></li>
-            <li><a href="#fakelink">站内信</a></li>
-            <li><a href="#fakelink">关于我们</a></li>
+            <li><a href="/">主页</a></li>
+            <li><a href="#fakelink">消息中心</a></li>
           </ul>
 
           <form class="navbar-form navbar-left" action="/search" role="search" method="GET">
@@ -39,7 +38,7 @@
               <span class="dropdown-arrow"></span>
               <ul class="dropdown-menu">
                 <li><a href="/users/{{ id }}">个人页面</a></li>
-                <li><a href="#">设置</a></li>
+                <li><a href="/settings">设置</a></li>
                 <li class="divider"></li>
                 <li><a href="/logout">注销</a></li>
               </ul>
@@ -71,7 +70,7 @@
         <div class="col-sm-offset-1 col-sm-8">
           <div class="tile item-detail-tile">
           {{#with item}}
-            <img src="{{ imageURL }}" alt="{{ name }}" class="tile-image big-illustration" >
+            <img id="item-image" src="{{ imageURL }}" alt="{{ name }}" class="tile-image big-illustration" >
             <h3 class="tile-title">[{{ name }}]</h3><!-- /.tile-title -->
             <ul>
               <li>
@@ -94,10 +93,11 @@
       <div class="row">
         <div class="col-sm-8">
           <div class="item-comment-box">
-            <form id="comment-form" action="/api/v1/items/{{ item.id }}/comments" method="POST">
+            <form id="comment-form" action="/items/{{ item.id }}/comments" method="POST">
               <div class="form-group">
                 <label for="comment-content" class="sr-only">Email address</label>
                 <textarea name="content" class="form-control" id="comment-content" placeholder="评论..." maxlength="140" onkeypress="if(event.keyCode==13) return false;"></textarea>
+                <input id="comment-reply-target" type="hidden" name="destId">
               </div>
               <div class="comment-btn">
                 <button type="submit" class="btn btn-inverse" id="comment-btn">评论</button>
@@ -109,6 +109,7 @@
           <div class="item-comment-list">
           {{#each comments}}
             <div class="item-comment clearfix">
+              <div class="item-comment-tools pull-right"><button class="item-comment-reply btn btn-primary btn-xs" data-owner="{{ author.id }}" type="button">回复</button></div>
               <a target="_balank" href="/users/{{ author.id }}" class="avatar">
                 <img src="/images/default.jpg" width="50">
               </a><!-- /.avatar -->
@@ -157,4 +158,14 @@
 {{#extend "scripts"}}
 <script src="http://api.map.baidu.com/api?v=2.0&ak=KS4GIyA5XOzQ6zsTOobXdwxO" type="text/javascript"></script>
 <script src="/javascripts/detail.js" type="text/javascript"></script>
+<!-- JiaThis Button BEGIN -->
+<script type="text/javascript" >
+var jiathis_config={
+  summary: '{{ item.itemDescription }}',
+  pic: '{{ item.imageURL }}',
+  title: '物品名：{{ item.name }} #L-FMS #失物招领'
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jiathis_r.js?move=0&amp;btn=r2.gif" charset="utf-8"></script>
+<!-- JiaThis Button END -->
 {{/extend}}

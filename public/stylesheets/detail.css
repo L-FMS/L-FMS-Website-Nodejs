@@ -75,11 +75,18 @@
 .item-comment-list .item-comment:hover {
   background-color: #f7f7f7;
 }
+.item-comment-list .item-comment .item-comment-tools {
+  display: none;
+}
+.item-comment-list .item-comment:hover .item-comment-tools {
+  display: block;
+}
 .item-comment-list .item-comment .avatar {
   float: left;
 }
 .item-comment-list .item-comment .item-comment-content {
   margin-left: 65px;
+  padding-right: 50px;
 }
 .item-comment-list .item-comment .item-comment-content p {
   margin: 0;

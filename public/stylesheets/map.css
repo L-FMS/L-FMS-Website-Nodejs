@@ -44,3 +44,7 @@ main {
 .result-list .result-item .result-item-image {
   width: 100%;
 }
+
+.result-list .row.tools {
+  padding: 10px 15px 10px 10px;
+}

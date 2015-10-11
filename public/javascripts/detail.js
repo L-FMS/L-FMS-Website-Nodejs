@@ -18,7 +18,16 @@ $(document).ready(function() {
     $('.item-comment-box textarea').animate({
       height: "42px"
     }, 250);
+    $('.item-comment-box textarea').val('');
+    $('#comment-reply-target').val('');
     $('.item-comment-box .comment-btn').fadeOut(100);
+  });
+
+  $('.item-comment-reply').click(function(event) {
+    event.preventDefault();
+    $('.item-comment-box textarea').focus();
+    var destId = $(this).data('owner');
+    if (destId) $('#comment-reply-target').val(destId);
   });
 
   // init map

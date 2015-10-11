@@ -20,3 +20,16 @@ ul[role="menu"] > li[role="menuitem"] > a:focus.selected {
     border: 1px solid #ddd;
     border-bottom-color: transparent;
 }
+
+.btn-group.select.select-block > button {
+  height: 42px;
+  font-size: 17px;
+  background-color: #ffffff;
+
+  border: 2px solid #bdc3c7;
+}
+.btn-group.select.select-block > button > span {
+  color: #34495e;
+  border-bottom-color: #34495e;
+  border-top-color: #34495e;
+}

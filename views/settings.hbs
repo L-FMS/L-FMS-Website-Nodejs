@@ -1,0 +1,205 @@
+{{#extend "stylesheets"}}
+<link rel="stylesheet" href="/stylesheets/example.css">
+<link rel="stylesheet" href="/stylesheets/settings.css">
+{{/extend}}
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top navbar-lg" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
+            <span class="sr-only">Toggle navigation</span>
+          </button>
+          <a class="navbar-brand" href="/">L&FMS</a>
+        </div>
+        <div class="collapse navbar-collapse" id="navbar-collapse-01">
+          <ul class="nav navbar-nav">
+            <li><a href="/">主页</a></li>
+            <li><a href="#fakelink">消息中心</a></li>
+          </ul>
+
+          <form class="navbar-form navbar-left" action="/search" role="search" method="GET">
+            <div class="form-group">
+              <div class="input-group">
+                <input class="form-control" name="q" id="navbarInput-01" type="search" placeholder="搜索">
+                <span class="input-group-btn">
+                  <button type="submit" class="btn">
+                    <span class="fui-search"></span>
+                  </button>
+                </span>
+              </div>
+            </div>
+          </form><!-- /search -->
+
+          <ul class="nav navbar-nav navbar-right">
+          {{#with currentUser}}
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{name}}<b class="caret"></b></a>
+              <span class="dropdown-arrow"></span>
+              <ul class="dropdown-menu">
+                <li><a href="/users/{{id}}">个人页面</a></li>
+                <li><a href="/settings">设置</a></li>
+                <li class="divider"></li>
+                <li><a href="/logout">注销</a></li>
+              </ul>
+            </li>
+          {{else}}
+            <li><a href="/join" class="navbar-link btn-sign-up">注册</a></li>
+            <li><a href="/login" class="navbar-link">登录</a></li>
+          {{/with}}
+          </ul>
+
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container -->
+    </nav><!-- /.navbar -->
+
+    <main class="container">
+      <!-- Nav tabs -->
+      <ul class="nav nav-tabs" role="tablist">
+        <li class="active"><a href="#info" aria-controls="info" role="tab" data-toggle="tab">个人信息</a></li>
+        <li><a href="#password" aria-controls="password" role="tab" data-toggle="tab">更改密码</a></li>
+        <li><a href="#validate-phone" aria-controls="validate-phone" role="tab" data-toggle="tab">手机号验证</a></li>
+      </ul>
+
+      <!-- Tab panes -->
+      <div class="tab-content">
+      {{#with currentUser}}
+        <!-- 个人信息 -->
+        <div class="tab-pane active fade in" id="info">
+          <form class="form-horizontal" role="form" name="infoForm" method="POST" action="/users/update">
+            <div class="form-group">
+              <label for="name" class="col-sm-1 control-label">姓名</label>
+              <div class="col-sm-6">
+                <input type="text" class="form-control" id="name" name="name" placeholder="姓名" value="{{ name }}">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="gender" class="col-sm-1 control-label">性别</label>
+              <div class="col-sm-6">
+                <select name="gender" id="gender" class="select-block" required>
+                  <option>请选择您的性别</option>
+                  {{#ifCond gender 'male'}}
+                  <option value="0" selected="selected">男</option>
+                  <option value="1">女</option>
+                  {{else}}
+                  <option value="0">男</option>
+                  <option value="1" selected="selected">女</option>
+                  {{/ifCond}}
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="birth" class="col-sm-1 control-label">生日</label>
+              <div class="col-sm-6">
+                <input type="date" class="form-control" id="birth" name="birth" placeholder="生日" value="{{ birth }}">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="phone" class="col-sm-1 control-label">手机</label>
+              <div class="col-sm-6">
+                <input type="text" class="form-control" id="phone" name="phone" placeholder="手机" value="{{ phone }}">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="major" class="col-sm-1 control-label">专业</label>
+              <div class="col-sm-6">
+                <input type="text" class="form-control" id="major" name="major" placeholder="专业" value="{{ major }}">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="address" class="col-sm-1 control-label">地址</label>
+              <div class="col-sm-6">
+                <input type="text" class="form-control" id="address" name="address" placeholder="地址" value="{{ address }}">
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-sm-offset-1 col-sm-10">
+              <button type="submit" class="btn btn-primary">确认更改</button>
+              </div>
+            </div>
+          </form>
+        </div><!-- /#info -->
+      {{/with}}
+        <!-- 修改密码 -->
+        <div class="tab-pane active fade" id="password">
+          <form class="form-horizontal" action="/users/changePassword" role="form" method="POST">
+            <div class="form-group">
+              <label for="old-pwd" class="col-sm-1 control-label">旧密码</label>
+              <div class="col-sm-6">
+                <input type="password" class="form-control" name="old-pwd" id="old-pwd" placeholder="旧密码">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="new-pwd" class="col-sm-1 control-label">新密码</label>
+              <div class="col-sm-6">
+                <input type="password" class="form-control" name="new-pwd" id="new-pwd" placeholder="新密码">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="confirm-pwd" class="col-sm-1 control-label">确认密码</label>
+              <div class="col-sm-6">
+                <input type="password" class="form-control" name="confirm-pwd" id="confirm-pwd" placeholder="确认密码">
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-sm-offset-1 col-sm-10">
+                <button type="submit" class="btn btn-primary">确认更改</button>
+              </div>
+            </div>
+          </form>
+        </div><!-- /#password -->
+
+      {{#with currentUser}}
+        <!-- 手机号验证 -->
+        <div class="tab-pane active fade" id="validate-phone">
+          <form class="form-horizontal" action="/users/changePassword" role="form" method="POST">
+            <div class="form-group">
+              <label class="col-sm-1 control-label">手机号码</label>
+              <div class="col-sm-6">
+                <p class="form-control-static">{{ phone }}</p>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="confirm-pwd" class="col-sm-1 control-label">验证码</label>
+              <div class="col-sm-6">
+                <input type="password" class="form-control" name="confirm-pwd" id="confirm-pwd" placeholder="验证码">
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-sm-offset-1 col-sm-10">
+                <button type="button" class="btn btn-primary">获取验证码</button>
+                <button type="submit" class="btn btn-primary">验证手机号</button>
+              </div>
+            </div>
+          </form>
+        </div><!-- /#validate-phone -->
+      {{/with}}
+      </div>
+    </main>
+
+    <!-- =====FOOTER===== -->
+    <footer>
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-7">
+            <h3 class="footer-title">L&FMS</h3>
+            <p><a href="/">L&FMS</a> © 2015 • 版权所有</p>
+          </div> <!-- /col-xs-7 -->
+
+          <div class="col-xs-5">
+            <div class="footer-banner">
+              <h3 class="footer-title">Feedback</h3>
+              <ul>
+                <li>Contact with us, if you have any problems!</li>
+              </ul>
+              Email to: <a href="mailto:webmaster@lfms.com">webmaster@lfms.com</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+{{#extend "scripts"}}
+<script src="/javascripts/bootstrap-select.js" type="text/javascript"></script>
+<script src="/javascripts/settings.js" type="text/javascript"></script>
+{{/extend}}

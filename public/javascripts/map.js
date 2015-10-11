@@ -4,7 +4,20 @@
  * @date    2015-10-03 22:23:28
  * @version 1.0
  */
+$('#myModal').modal({
+  keyboard: false
+});
+
+$('#myModal').on('show.bs.modal', function (e) {
+  $('#loading-progress').width('0%');
+})
+
+$('#myModal').on('hidden.bs.modal', function (e) {
+  $('#loading-progress').width('0%');
+})
+
 $(document).ready(function() {
+  $('#loading-progress').width('5%');
   // init map
   var map = new BMap.Map('item-map');
   var itemOverlays = [];
@@ -81,7 +94,7 @@ $(document).ready(function() {
     });
 
     // Add to result list
-    var list = $('#result-list>.row');
+    var list = $('#result-list>.row.list');
     var resultItem = getResultItem(item);
     resultItem.on('click', function(event) {
       // event.preventDefault();
@@ -92,27 +105,35 @@ $(document).ready(function() {
   }
 
   function showItems(items) {
+    $('#loading-progress').width('60%');
     mgr.clearMarkers();
-    var list = $('#result-list>.row');
+    var list = $('#result-list>.row.list');
     list.empty();
 
     for (var i = 0; i < items.length; i++) {
       var item = items[i];
       addItem(item);
+      if (i == 0) {
+        var itemGeoPoint = item.get('location');
+        var itemPoint = new BMap.Point(itemGeoPoint.longitude, itemGeoPoint.latitude); // lng, lat
+        map.panTo(itemPoint);
+      };
     };
 
     mgr.showMarkers();
+    $('#loading-progress').width('80%');
   }
 
   function retrieveItems(centerPoint) {
+    $('#loading-progress').width('40%');
     var point = new AV.GeoPoint({
       'latitude': centerPoint.lat,
       'longitude': centerPoint.lng
     });
 
     var query = new AV.Query(Item);
-    // query.withinKilometers('location', point, 10);
-    query.near('location', point);
+    query.withinKilometers('location', point, 2.5);
+    // query.near('location', point);
     query.find({
       success: function (items) {
         showItems(items);
@@ -148,6 +169,7 @@ $(document).ready(function() {
     });
   }
 
+  $('#loading-progress').width('10%');
   // Default - current city
   var myCity = new BMap.LocalCity();
   myCity.get(function (result) {
@@ -191,11 +213,17 @@ $(document).ready(function() {
     map.addOverlay(centerMarker);
 
     retrieveItems(point);
+
+    $('#loading-progress').width('100%');
+    $('#myModal').modal('hide');
   });
 
   geolocationControl.addEventListener('locationError', function (e) {
     // 定位失败事件
     console.log(e.message);
+
+    $('#loading-progress').width('100%');
+    $('#myModal').modal('hide');
 
     // // Default - current city
     // var myCity = new BMap.LocalCity();
@@ -207,6 +235,7 @@ $(document).ready(function() {
 
   map.addControl(geolocationControl);
 
+  $('#loading-progress').width('30%');
   // 开始定位
   geolocationControl.location();
 
