@@ -37,7 +37,7 @@ $(document).ready(function() {
 
     var fromId = $(this).data('sender');
     var toId = $(this).data('receiver');
-    var itemId = $(this).data('itemId');
+    var itemId = $(this).data('item');
 
     $.post('/sendMessage/' + toId, {itemId: itemId}, function(data, textStatus, xhr) {
       $btn.button('reset');

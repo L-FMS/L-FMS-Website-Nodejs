@@ -41,7 +41,8 @@ $(document).ready(function() {
                      '</div>' +
                      '<div class="result-item-info">' +
                        '<p><small class="result-item-place">地点：<span>' + item.get('place') + '</span></small><br/>' +
-                       '<small class="result-item-description">物品描述：<span>' + item.get('itemDescription') + '</span></small></p>' +
+                       '<small class="result-item-description">物品描述：<span>' + item.get('itemDescription') + '</span></small><br/>' +
+                       '<small class="result-item-tags">标签：<span>' + item.get('tags').join(', ') + '</span></small></p>' +
                      '</div>' +
                    '</div>' +
                    '<div class="col-sm-4">' +

@@ -133,10 +133,10 @@ var frontendControllers = {
           'time': item.createdAt.toLocaleString(),
           'type': item.get('type'),
           'itemDescription': item.get('itemDescription'),
-          'imageURL': item.get('image').url()
+          'imageURL': item.get('image').url(),
+          'tags': item.get('tags').join(', ')
         };
 
-        // TODO: 之后改成浏览器端ajax加载
         item.getComments()
           .then(function (comments) {
             res.data.comments = [];
