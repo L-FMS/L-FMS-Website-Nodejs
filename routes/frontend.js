@@ -91,7 +91,8 @@ function validateCommentRequest(req, res, next) {
     'mark': 'comment data',
     'content': req.body.content,
     'item': AV.Object.createWithoutData('Item', req.data.id),
-    'destId': req.body.destId
+    'destId': req.body.destId,
+    'itemOwner': req.body.itemOwner
   };
 
   next();
@@ -117,6 +118,8 @@ var frontendRoutes = function () {
     var currentUser = AV.User.current();
     res.data = {}; // init
     if (currentUser) {
+      // TODO: 获取未读消息数量
+
       var date = currentUser.get('birth');
       var fullYear = date.getFullYear();
       var month = date.getMonth() + 1 < 10 ? ('0' + (date.getMonth() + 1)) : date.getMonth() + 1;
@@ -128,7 +131,8 @@ var frontendRoutes = function () {
         birth: fullYear + '-' + month + '-' + day,
         phone: currentUser.get('mobilePhoneNumber'),
         major: currentUser.get('major'),
-        address: currentUser.get('address')
+        address: currentUser.get('address'),
+        unreadNotifications: 4
       };
     }
 
@@ -214,6 +218,12 @@ var frontendRoutes = function () {
 
   // Setting
   router.get('/settings', validateLogin, frontend.settingsPage);
+
+  // Notification Center
+  router.get('/notificationCenter', validateLogin, frontend.notificationCenterPage);
+
+  // Send sms and email
+  router.post('/sendMessage/:userId', validateLogin, frontend.sendMessage);
 
   // router.get('/map', frontend.mapPage);
 

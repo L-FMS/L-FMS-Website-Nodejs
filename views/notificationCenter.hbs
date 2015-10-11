@@ -13,9 +13,9 @@
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse-01">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="/">主页</a></li>
+            <li><a href="/">主页</a></li>
           {{#with currentUser}}
-            <li><a href="/notificationCenter">消息中心 <span class="navbar-new">{{ unreadNotifications }}</span></a></li>
+            <li class="active"><a href="/notificationCenter">消息中心 <span class="navbar-new">{{ unreadNotifications }}</span></a></li>
           {{/with}}
           </ul>
 
@@ -35,11 +35,11 @@
           <ul class="nav navbar-nav navbar-right">
           {{#with currentUser}}
             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{name}}<b class="caret"></b></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ name }}<b class="caret"></b></a>
               <span class="dropdown-arrow"></span>
               <ul class="dropdown-menu">
-                <li><a href="/users/{{id}}">个人页面</a></li>
-                <li><a href="#">设置</a></li>
+                <li><a href="/users/{{ id }}">个人页面</a></li>
+                <li><a href="/settings">设置</a></li>
                 <li class="divider"></li>
                 <li><a href="/logout">注销</a></li>
               </ul>
@@ -55,43 +55,7 @@
     </nav><!-- /.navbar -->
 
     <main class="container">
-      <div class="row">
-        <div class="col-sm-12">
-          <h3>Search Results <small> for "xxxxx"</small> </h3>
-          <div class="table-responsive">
-            <table class="table table-hover">
-              <thead>
-                <tr>
-                  <th>物品名称</th>
-                  <th>发布时间</th>
-                  <th>地点</th>
-                </tr>
-              </thead>
-              <tbody>
-              {{#each results}}
-              {{#ifCond type 'find'}}
-                <tr class="success">
-              {{else}}
-                <tr class="danger">
-              {{/ifCond}}
-                  <td><a href="/items/{{ id }}">{{ name }}</a></td>
-                  <td>{{ time }}</td>
-                  <td>{{ place }}</td>
-                </tr>
-              {{/each}}
-              </tbody>
-            </table>
-          </div>
-          <div class="pagination col-sm-12 text-center">
-            <ul>
-              <li class="previous"><a href="#fakelink" class="fui-arrow-left"></a></li>
-              <li class="active"><a href="#fakelink">1</a></li>
-              <li><a href="#fakelink">2</a></li>
-              <li class="next"><a href="#fakelink" class="fui-arrow-right"></a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
+
     </main>
 
     <!-- =====FOOTER===== -->
@@ -115,3 +79,6 @@
         </div>
       </div>
     </footer>
+
+{{#extend "scripts"}}
+{{/extend}}

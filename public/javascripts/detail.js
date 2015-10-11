@@ -30,6 +30,21 @@ $(document).ready(function() {
     if (destId) $('#comment-reply-target').val(destId);
   });
 
+  $('#contact-btn').click(function(event) {
+    event.preventDefault();
+
+    var $btn = $(this).button('loading');
+
+    var fromId = $(this).data('sender');
+    var toId = $(this).data('receiver');
+    var itemId = $(this).data('itemId');
+
+    $.post('/sendMessage/' + toId, {itemId: itemId}, function(data, textStatus, xhr) {
+      $btn.button('reset');
+      console.log(data);
+    });
+  });
+
   // init map
   var map = new BMap.Map('item-map');
   var local = new BMap.LocalSearch(map);

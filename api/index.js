@@ -7,6 +7,7 @@
 var users    = require('./users');
 var items    = require('./items');
 var comments = require('./comments');
+var itemNotifications = require('./itemNotifications');
 
 var http = function (apiMethod) {
   return function (req, res, next) {
@@ -28,5 +29,6 @@ module.exports = {
     // API Endpoints
     users: users,
     items: items,
-    comments: comments
+    comments: comments,
+    itemNotifications: itemNotifications
 };

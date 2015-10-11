@@ -6,6 +6,7 @@
  */
 var AV  = require('avoscloud-sdk').AV;
 var api = require('../api');
+var Item = require('../models/item');
 
 var frontendControllers = {
   'homepage': function (req, res, next) {
@@ -176,6 +177,10 @@ var frontendControllers = {
     res.data.title = '个人设置 | 失物招领管理系统';
     res.render('settings', res.data);
   },
+  'notificationCenterPage': function (req, res, next) {
+    res.data.title = '消息中心 ｜ 失物招领管理系统';
+    res.render('notificationCenter', res.data);
+  },
   'register': function (req, res, next) {
     var object = req.data || null;
     delete object.mark;
@@ -195,13 +200,21 @@ var frontendControllers = {
 
     api.comments.add(object)
       .then(function (comment) {
-        AV.Push.send({
-          channels: [AV.User.current().id],
-          data: {
-            type: 'newComment',
-            from: comment.get('author').get('name')
-          }
-        });
+        // 添加一条未读消息
+        var data = {};
+
+        data.to = object.destId || object.itemOwner;
+        data.type = 'comment';
+        data.itemId = object.item.id;
+
+        api.itemNotifications.add(data)
+          .then(function (itemNotification) {
+            console.log('success add comment notification');
+          })
+          .catch(function (error) {
+            // TODO: handle error
+            console.log('fail add comment notification');
+          });
       })
       .catch(function (error) {
         // TODO: handle error
@@ -262,6 +275,31 @@ var frontendControllers = {
       .catch(function (user, error) {
         // TODO: handle error
         res.redirect('back');
+      });
+  },
+  'sendMessage': function (req, res, next) {
+    // 添加一条未读消息
+    var object = req.data || {};
+    delete object.mark;
+
+    object.to = object.id;
+    delete object.id;
+    object.type = 'itemConfirm';
+    object.itemId = req.body.itemId;
+
+    api.itemNotifications.add(object)
+      .then(function (itemNotification) {
+        var data = {
+          'isSuccess': true
+        };
+        res.json(data);
+      })
+      .catch(function (error) {
+        // TODO: handle error
+        var data = {
+          'isSuccess': false
+        };
+        res.json(data);
       });
   }
 };

@@ -32,7 +32,9 @@
         <div class="collapse navbar-collapse" id="navbar-collapse-01">
           <ul class="nav navbar-nav">
             <li class="active"><a href="/">主页</a></li>
-            <li><a href="#fakelink">消息中心</a></li>
+          {{#with currentUser}}
+            <li><a href="/notificationCenter">消息中心 <span class="navbar-new">{{ unreadNotifications }}</span></a></li>
+          {{/with}}
           </ul>
 
           <form class="navbar-form navbar-left" id="map-search-form" role="search" method="GET">
