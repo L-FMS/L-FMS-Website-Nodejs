@@ -179,7 +179,41 @@ var frontendControllers = {
   },
   'notificationCenterPage': function (req, res, next) {
     res.data.title = '消息中心 ｜ 失物招领管理系统';
-    res.render('notificationCenter', res.data);
+    // 获取当前用户的所有消息
+    api.itemNotifications.all()
+      .then(function (results) {
+        res.data.results = [];
+        for (var i = 0; i < results.length; i++) {
+          var itemNotification = results[i];
+          var type = itemNotification.get('type');
+          var sender = itemNotification.get('from');
+          var item = itemNotification.get('item');
+
+          var message = {
+            senderId: sender.id,
+            senderName: sender.get('name'),
+            itemId: item.id
+          };
+
+          res.data.results.push({
+            status: itemNotification.get('isRead') ? '已读' : '未读',
+            message: message,
+            type: type
+          });
+
+          if (!itemNotification.get('isRead')) {
+            itemNotification.set('isRead', true);
+            itemNotification.save();
+          }
+        };
+
+        res.render('notificationCenter', res.data);
+      })
+      .catch(function (error) {
+        // TODO: handle error
+        console.log('error');
+        console.log(error);
+      });
   },
   'register': function (req, res, next) {
     var object = req.data || null;

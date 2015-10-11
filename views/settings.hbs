@@ -16,7 +16,11 @@
           <ul class="nav navbar-nav">
             <li><a href="/">主页</a></li>
           {{#with currentUser}}
-            <li><a href="/notificationCenter">消息中心 <span class="navbar-new">{{ unreadNotifications }}</span></a></li>
+            <li><a href="/notificationCenter">消息中心
+              {{~#if unreadNotifications ~}}
+               <span class="navbar-new">{{ unreadNotifications }}</span>
+              {{~/if~}}
+            </a></li>
           {{/with}}
           </ul>
 
@@ -60,7 +64,7 @@
       <ul class="nav nav-tabs" role="tablist">
         <li class="active"><a href="#info" aria-controls="info" role="tab" data-toggle="tab">个人信息</a></li>
         <li><a href="#password" aria-controls="password" role="tab" data-toggle="tab">更改密码</a></li>
-        <li><a href="#validate-phone" aria-controls="validate-phone" role="tab" data-toggle="tab">手机号验证</a></li>
+        {{!-- <li><a href="#validate-phone" aria-controls="validate-phone" role="tab" data-toggle="tab">手机号验证</a></li> --}}
       </ul>
 
       <!-- Tab panes -->
@@ -151,7 +155,7 @@
           </form>
         </div><!-- /#password -->
 
-      {{#with currentUser}}
+{{!--       {{#with currentUser}}
         <!-- 手机号验证 -->
         <div class="tab-pane active fade" id="validate-phone">
           <form class="form-horizontal" action="/users/changePassword" role="form" method="POST">
@@ -175,7 +179,7 @@
             </div>
           </form>
         </div><!-- /#validate-phone -->
-      {{/with}}
+      {{/with}} --}}
       </div>
     </main>
 

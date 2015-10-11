@@ -9,6 +9,7 @@ var express  = require('express');
 var frontend = require('../controllers/frontend');
 var AV       = require('avoscloud-sdk').AV;
 var multer   = require('multer');
+var api = require('../api');
 
 var upload   = multer({ dest: 'uploads/' });
 
@@ -131,12 +132,22 @@ var frontendRoutes = function () {
         birth: fullYear + '-' + month + '-' + day,
         phone: currentUser.get('mobilePhoneNumber'),
         major: currentUser.get('major'),
-        address: currentUser.get('address'),
-        unreadNotifications: 4
+        address: currentUser.get('address')
       };
-    }
 
-    next();
+      api.itemNotifications.getUnreadNotificationAmount()
+        .then(function (count) {
+          console.log('count: ' + count);
+          res.data.currentUser.unreadNotifications = count;
+          next();
+        })
+        .catch(function (error) {
+          // TODO: handle error
+          next();
+        });
+    } else {
+      next();
+    }
   });
 
   // Process parameters first
@@ -224,6 +235,9 @@ var frontendRoutes = function () {
 
   // Send sms and email
   router.post('/sendMessage/:userId', validateLogin, frontend.sendMessage);
+
+  // Get notification amount
+  // router.get('/getUnreadNotificationAmount', validateLogin, frontend.getUnreadNotificationAmount);
 
   // router.get('/map', frontend.mapPage);
 

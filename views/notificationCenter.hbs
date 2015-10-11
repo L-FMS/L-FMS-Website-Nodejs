@@ -15,7 +15,11 @@
           <ul class="nav navbar-nav">
             <li><a href="/">主页</a></li>
           {{#with currentUser}}
-            <li class="active"><a href="/notificationCenter">消息中心 <span class="navbar-new">{{ unreadNotifications }}</span></a></li>
+            <li class="active"><a href="/notificationCenter">消息中心
+              {{~#if unreadNotifications ~}}
+               <span class="navbar-new">{{ unreadNotifications }}</span>
+              {{~/if~}}
+            </a></li>
           {{/with}}
           </ul>
 
@@ -55,7 +59,37 @@
     </nav><!-- /.navbar -->
 
     <main class="container">
-
+      <div class="row">
+        <div class="col-sm-12">
+          <h3>消息列表</h3>
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>消息内容</th>
+                  <th>状态</th>
+                </tr>
+              </thead>
+              <tbody>
+            {{#each results}}
+              {{#ifCond status '已读'}}
+                <tr class="text-muted">
+              {{else}}
+                <tr>
+              {{/ifCond}}
+                {{#ifCond type 'comment'}}
+                  <td><a href="/users/{{ message.senderId }}">{{ message.senderName }}</a>在<a href="/items/{{ message.itemId }}">该物品</a>中评论了你</td>
+                {{else}}
+                  <td><a href="/users/{{ message.senderId }}">{{ message.senderName }}</a>确认了<a href="/items/{{ message.itemId }}">该物品</a></td>
+                {{/ifCond}}
+                  <td>{{ status }}</td>
+                </tr>
+            {{/each}}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </main>
 
     <!-- =====FOOTER===== -->

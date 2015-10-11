@@ -13,9 +13,13 @@
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse-01">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="/">主页</a></li>
+            <li><a href="/">主页</a></li>
           {{#with currentUser}}
-            <li><a href="/notificationCenter">消息中心 <span class="navbar-new">{{ unreadNotifications }}</span></a></li>
+            <li><a href="/notificationCenter">消息中心
+              {{~#if unreadNotifications ~}}
+               <span class="navbar-new">{{ unreadNotifications }}</span>
+              {{~/if~}}
+            </a></li>
           {{/with}}
           </ul>
 

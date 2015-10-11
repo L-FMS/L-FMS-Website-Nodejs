@@ -16,7 +16,11 @@
           <ul class="nav navbar-nav">
             <li><a href="/">主页</a></li>
           {{#with currentUser}}
-            <li><a href="/notificationCenter">消息中心 <span class="navbar-new">{{ unreadNotifications }}</span></a></li>
+            <li><a href="/notificationCenter">消息中心
+              {{~#if unreadNotifications ~}}
+               <span class="navbar-new">{{ unreadNotifications }}</span>
+              {{~/if~}}
+            </a></li>
           {{/with}}
           </ul>
 
@@ -97,6 +101,7 @@
         </div>
       </div>
       <hr>
+    {{#if currentUser}}
       <div class="row">
         <div class="col-sm-8">
           <div class="item-comment-box">
@@ -139,6 +144,7 @@
           </div><!-- /.item-comment-list -->
         </div>
       </div>
+    {{/if}}
     </main>
 
     <!-- =====FOOTER===== -->
