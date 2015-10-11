@@ -1,0 +1,15 @@
+{{#extend "stylesheets"}}
+<link rel="stylesheet" href="/stylesheets/error.css">
+{{/extend}}
+
+    <main class="post-screen">
+      <div class="login-icon">
+        <img src="/images/icons/svg/paper-bag.svg" alt="Welcome th L&FMS">
+        <h4 class="text-center">错误</h4>
+      </div>
+
+      <form class="login-form" runat="server">
+        <p class="text-center">{{ message }}</p>
+        <a href="{{ referer }}" class="btn btn-danger btn-lg btn-block">返回主页</a>
+      </form>
+    </main>

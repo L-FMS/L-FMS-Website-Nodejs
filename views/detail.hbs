@@ -1,0 +1,185 @@
+{{#extend "stylesheets"}}
+<link rel="stylesheet" href="/stylesheets/example.css">
+<link rel="stylesheet" href="/stylesheets/detail.css">
+{{/extend}}
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top navbar-lg" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
+            <span class="sr-only">Toggle navigation</span>
+          </button>
+          <a class="navbar-brand" href="/">L&FMS</a>
+        </div>
+        <div class="collapse navbar-collapse" id="navbar-collapse-01">
+          <ul class="nav navbar-nav">
+            <li><a href="/">主页</a></li>
+          {{#with currentUser}}
+            <li><a href="/notificationCenter">消息中心
+              {{~#if unreadNotifications ~}}
+               <span class="navbar-new">{{ unreadNotifications }}</span>
+              {{~/if~}}
+            </a></li>
+          {{/with}}
+          </ul>
+
+          <form class="navbar-form navbar-left" action="/search" role="search" method="GET">
+            <div class="form-group">
+              <div class="input-group">
+                <input class="form-control" name="q" id="navbarInput-01" type="search" placeholder="搜索">
+                <span class="input-group-btn">
+                  <button type="submit" class="btn">
+                    <span class="fui-search"></span>
+                  </button>
+                </span>
+              </div>
+            </div>
+          </form><!-- /search -->
+
+          <ul class="nav navbar-nav navbar-right">
+          {{#with currentUser}}
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ name }}<b class="caret"></b></a>
+              <span class="dropdown-arrow"></span>
+              <ul class="dropdown-menu">
+                <li><a href="/users/{{ id }}">个人页面</a></li>
+                <li><a href="/settings">设置</a></li>
+                <li class="divider"></li>
+                <li><a href="/logout">注销</a></li>
+              </ul>
+            </li>
+          {{else}}
+            <li><a href="/join" class="navbar-link btn-sign-up">注册</a></li>
+            <li><a href="/login" class="navbar-link">登录</a></li>
+          {{/with}}
+          </ul>
+
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container -->
+    </nav><!-- /.navbar -->
+
+    <main class="container">
+      <div class="row">
+        <div class="col-sm-3">
+        {{#if user}}
+          <div class="tile person-tile">
+            <img src="/images/default.jpg" alt="Avatar" class="tile-image big-illustration">
+            <h3 class="tile-title"><a href="/users/{{ user.id }}">{{ user.name }}</a></h3>
+            <p>手机: {{ user.phone }}</p>
+            <p>地址: {{ user.address }}</p>
+            {{#ifCond user.id currentUser.id}}
+            {{else}}
+            {{#if currentUser.id}}
+            <button data-receiver="{{ user.id }}" data-sender="{{ currentUser.id }}" data-item="{{ item.id }}" class="btn btn-primary btn-large btn-block" id="contact-btn" data-loading-text="发送中...">请联系我</button>
+            {{/if}}
+            {{/ifCond}}
+          </div><!-- /.person-tile -->
+        {{/if}}
+        </div>
+
+        <div class="col-sm-offset-1 col-sm-8">
+          <div class="tile item-detail-tile">
+          {{#with item}}
+            <img id="item-image" src="{{ imageURL }}" alt="{{ name }}" class="tile-image big-illustration" >
+            <h3 class="tile-title">[{{ name }}]</h3><!-- /.tile-title -->
+            <ul>
+              <li>
+                <span class="fui-time"></span> {{ time }}
+              </li>
+              <li>
+                <span class="fui-location"></span> {{ place }}
+              </li>
+              <li class="item-description">
+                <span class="fui-list"></span> 物品描述:
+                <p>{{ itemDescription }}</p>
+              </li>
+            </ul>
+            <div id="item-map" data-location="{{ location }}" data-address="{{ place }}" data-type="{{ type }}"></div>
+          {{/with}}
+          </div><!-- /.item-detail-tile -->
+        </div>
+      </div>
+      <hr>
+    {{#if currentUser}}
+      <div class="row">
+        <div class="col-sm-8">
+          <div class="item-comment-box">
+            <form id="comment-form" action="/items/{{ item.id }}/comments" method="POST">
+              <div class="form-group">
+                <label for="comment-content" class="sr-only">Email address</label>
+                <textarea name="content" class="form-control" id="comment-content" placeholder="评论..." maxlength="140" onkeypress="if(event.keyCode==13) return false;"></textarea>
+                <input id="comment-reply-target" type="hidden" name="destId">
+                <input type="hidden" name="itemOwner" value="{{ user.id }}">
+              </div>
+              <div class="comment-btn">
+                <button type="submit" class="btn btn-inverse" id="comment-btn">评论</button>
+                <button class="btn btn-link" id="comment-cancel-btn">取消</button>
+              </div>
+            </form>
+          </div><!-- /.item-comment-box -->
+
+          <div class="item-comment-list">
+          {{#each comments}}
+            <div class="item-comment clearfix">
+              <div class="item-comment-tools pull-right"><button class="item-comment-reply btn btn-primary btn-xs" data-owner="{{ author.id }}" type="button">回复</button></div>
+              <a target="_balank" href="/users/{{ author.id }}" class="avatar">
+                <img src="/images/default.jpg" width="50">
+              </a><!-- /.avatar -->
+
+              <div class="item-comment-content">
+                <p class="content-text">
+                  <a href="/users/{{ author.id }}" target="_blank" class="name">{{ author.name }}</a>
+                  {{~#if replyTo ~}}
+                  &nbsp回复&nbsp<a href="/users/{{ replyTo.id }}" target="_blank" class="name">{{ replyTo.name }}</a>
+                  {{~/if~}}
+                  : {{ content }}
+                </p><!-- /.content-text -->
+
+                <span class="comment-time text-muted">{{ time }}</span><!-- /.comment-time -->
+              </div><!-- /.item-comment-content -->
+
+            </div><!-- /.item-comment -->
+          {{/each}}
+          </div><!-- /.item-comment-list -->
+        </div>
+      </div>
+    {{/if}}
+    </main>
+
+    <!-- =====FOOTER===== -->
+    <footer>
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-7">
+            <h3 class="footer-title">L&FMS</h3>
+            <p><a href="/">L&FMS</a> © 2015 • 版权所有</p>
+          </div> <!-- /col-xs-7 -->
+
+          <div class="col-xs-5">
+            <div class="footer-banner">
+              <h3 class="footer-title">Feedback</h3>
+              <ul>
+                <li>Contact with us, if you have any problems!</li>
+              </ul>
+              Email to: <a href="mailto:webmaster@lfms.com">webmaster@lfms.com</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+{{#extend "scripts"}}
+<script src="http://api.map.baidu.com/api?v=2.0&ak=KS4GIyA5XOzQ6zsTOobXdwxO" type="text/javascript"></script>
+<script src="/javascripts/detail.js" type="text/javascript"></script>
+<!-- JiaThis Button BEGIN -->
+<script type="text/javascript" >
+var jiathis_config={
+  summary: '{{ item.itemDescription }}',
+  pic: '{{ item.imageURL }}',
+  title: '物品名：{{ item.name }} #L-FMS #失物招领'
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jiathis_r.js?move=0&amp;btn=r2.gif" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+{{/extend}}
