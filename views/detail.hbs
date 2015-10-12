@@ -113,7 +113,7 @@
                 <label for="comment-content" class="sr-only">Email address</label>
                 <textarea name="content" class="form-control" id="comment-content" placeholder="评论..." maxlength="140" onkeypress="if(event.keyCode==13) return false;"></textarea>
                 <input id="comment-reply-target" type="hidden" name="destId">
-                <input type="hidden" name="itemOwner" value="{{ user.id }}">
+                <input type="hidden" name="itemOwnerId" value="{{ user.id }}">
               </div>
               <div class="comment-btn">
                 <button type="submit" class="btn btn-inverse" id="comment-btn">评论</button>

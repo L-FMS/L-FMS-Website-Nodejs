@@ -28,19 +28,21 @@ var comments = {
     };
     comment.set('item', object.item);
 
-    var query = new AV.Query(AV.User);
+    console.log('Comment object: ');
+    console.log(object);
 
-    return query.get(object.destId)
-      .then(function (user) {
-        // 关联回复对象
-        comment.set('replyTo', user);
-      })
-      .catch(function (error) {
-        // TODO: handle error
-      })
-      .finally(function () {
-        return comment.save();
-      });
+    if (object.destId) {
+      var destUser = AV.Object.createWithoutData('_User', object.destId);
+      comment.set('replyTo', destUser);
+      comment.addUnique('replyToUsers', destUser);
+    };
+
+    var itemOwner = AV.Object.createWithoutData('_User', object.itemOwnerId);
+    comment.addUnique('replyToUsers', itemOwner);
+
+    console.log('comment data: ' + JSON.stringify(comment));
+
+    return comment.save();
   },
   destory: function (object) {
 

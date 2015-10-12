@@ -41,6 +41,10 @@ main {
   background-color: #f7f7f7;
 }
 
+.result-list .result-item:hover.disabled {
+  cursor: auto;
+}
+
 .result-list .result-item .result-item-image {
   width: 100%;
 }

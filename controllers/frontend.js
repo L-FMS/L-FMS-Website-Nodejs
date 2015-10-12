@@ -48,8 +48,16 @@ var frontendControllers = {
           'id': user.id,
           'name': user.get('name'),
           'email': user.get('email'),
-          'birth': user.get('birth').toLocaleString(),
-          'gender': user.get('gender') == 'male' ? '男' : '女'
+          'birth': user.get('birth'),
+          'gender': user.get('gender')
+        };
+
+        if (res.data.user.birth) {
+          res.data.user.birth = res.data.user.birth.toLocaleString();
+        };
+
+        if (res.data.user.gender) {
+          res.data.user.gender == 'male' ? '男' : '女'
         };
 
         // Process items array
@@ -175,6 +183,21 @@ var frontendControllers = {
   },
   'settingsPage': function (req, res, next) {
     res.data.title = '个人设置 | 失物招领管理系统';
+
+    var currentUser = AV.User.current();
+    var date = currentUser.get('birth');
+    if (date) {
+      var fullYear = date.getFullYear();
+      var month = date.getMonth() + 1 < 10 ? ('0' + (date.getMonth() + 1)) : date.getMonth() + 1;
+      var day = date.getDate() < 10 ? ('0' + date.getDate()) : date.getDate();
+      res.data.currentUser.birth = fullYear + '-' + month + '-' + day;
+    };
+
+    res.data.currentUser.gender = currentUser.get('gender');
+    res.data.currentUser.phone = currentUser.get('mobilePhoneNumber');
+    res.data.currentUser.major = currentUser.get('major');
+    res.data.currentUser.address = currentUser.get('address')
+
     res.render('settings', res.data);
   },
   'notificationCenterPage': function (req, res, next) {
@@ -237,9 +260,11 @@ var frontendControllers = {
         // 添加一条未读消息
         var data = {};
 
-        data.to = object.destId || object.itemOwner;
+        data.to = object.destId || object.itemOwnerId;
         data.type = 'comment';
         data.itemId = object.item.id;
+
+        console.log('item notificaion data: ' + JSON.stringify(data));
 
         api.itemNotifications.add(data)
           .then(function (itemNotification) {
@@ -252,6 +277,8 @@ var frontendControllers = {
       })
       .catch(function (error) {
         // TODO: handle error
+        console.log('add comment error');
+        console.log(error);
       });
 
     res.redirect('back');

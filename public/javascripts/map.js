@@ -22,6 +22,7 @@ $(document).ready(function() {
   var map = new BMap.Map('item-map');
   var itemOverlays = [];
   var mgr = new BMapLib.MarkerManager(map, { maxZoom: 18, trackMarkers: true });
+  var centerMarkerManager = new BMapLib.MarkerManager(map, { maxZoom: 18 });
 
   function getResultItem(item) {
     var type = item.get('type');
@@ -51,6 +52,17 @@ $(document).ready(function() {
                  '</div>' +
                '</div>';
     return $(html)
+  }
+
+  function getEmptyResultItem() {
+    var html = '<div class="col-sm-12 result-item disabled">' +
+                 '<div class="row">' +
+                   '<div class="col-sm-12">' +
+                     '<p class="text-center text-muted">附近没有物品</p>' +
+                   '</div>' +
+                 '</div>' +
+               '</div>';
+    return $(html);
   }
 
   function addItem(item) {
@@ -105,16 +117,20 @@ $(document).ready(function() {
     list.append(resultItem);
   }
 
-  function showItems(items) {
+  function showItems(items, notPanToCenter) {
     $('#loading-progress').width('60%');
     mgr.clearMarkers();
     var list = $('#result-list>.row.list');
     list.empty();
 
+    if (items.length === 0) {
+      list.append(getEmptyResultItem());
+    };
+
     for (var i = 0; i < items.length; i++) {
       var item = items[i];
       addItem(item);
-      if (i == 0) {
+      if (!notPanToCenter && i == 0) {
         var itemGeoPoint = item.get('location');
         var itemPoint = new BMap.Point(itemGeoPoint.longitude, itemGeoPoint.latitude); // lng, lat
         map.panTo(itemPoint);
@@ -125,7 +141,8 @@ $(document).ready(function() {
     $('#loading-progress').width('80%');
   }
 
-  function retrieveItems(centerPoint) {
+  function retrieveItems(centerPoint, notPanToCenter) {
+    // center point是百度地图的点
     $('#loading-progress').width('40%');
     var point = new AV.GeoPoint({
       'latitude': centerPoint.lat,
@@ -137,7 +154,7 @@ $(document).ready(function() {
     // query.near('location', point);
     query.find({
       success: function (items) {
-        showItems(items);
+        showItems(items, notPanToCenter);
       },
       error: function (error) {
         console.log(error);
@@ -239,6 +256,24 @@ $(document).ready(function() {
   $('#loading-progress').width('30%');
   // 开始定位
   geolocationControl.location();
+
+  map.addEventListener('click', function(e) {
+    var point = e.point;
+
+    // Mark and move to point
+    centerMarkerManager.clearMarkers();
+
+    var itemIcon = new BMap.Icon("/images/marker_gray_sprite.png", new BMap.Size(19,25));
+    var mk = new BMap.Marker(point, { icon:itemIcon });
+    centerMarkerManager.addMarker(mk);
+
+    centerMarkerManager.showMarkers();
+
+    // Search items around
+    retrieveItems(point, true);
+
+    map.panTo(point);
+  });
 
   $('#map-search-form').submit(function (event) {
     event.preventDefault();

@@ -93,7 +93,7 @@ function validateCommentRequest(req, res, next) {
     'content': req.body.content,
     'item': AV.Object.createWithoutData('Item', req.data.id),
     'destId': req.body.destId,
-    'itemOwner': req.body.itemOwner
+    'itemOwnerId': req.body.itemOwnerId
   };
 
   next();
@@ -121,18 +121,9 @@ var frontendRoutes = function () {
     if (currentUser) {
       // TODO: 获取未读消息数量
 
-      var date = currentUser.get('birth');
-      var fullYear = date.getFullYear();
-      var month = date.getMonth() + 1 < 10 ? ('0' + (date.getMonth() + 1)) : date.getMonth() + 1;
-      var day = date.getDate() < 10 ? ('0' + date.getDate()) : date.getDate();
       res.data.currentUser = {
         name: currentUser.get('name'),
-        id: currentUser.id,
-        gender: currentUser.get('gender'),
-        birth: fullYear + '-' + month + '-' + day,
-        phone: currentUser.get('mobilePhoneNumber'),
-        major: currentUser.get('major'),
-        address: currentUser.get('address')
+        id: currentUser.id
       };
 
       api.itemNotifications.getUnreadNotificationAmount()
